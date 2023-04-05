@@ -3,7 +3,7 @@
 var arrNhanVien = [];
 
 document.querySelector('#btnThemNV').onclick = function (event) {
-    event.preventDefaul();
+    event.preventDefault();
     // chặn sự kiện reload
 
 
@@ -121,9 +121,62 @@ function chinhSuaNhanVien(taiKhoanNVClick) {
         chonChucVu.value =  arrNhanVien[indexEdit].chucVu;
        document.querySelector('#luongCB').value = arrNhanVien[indexEdit].luongCoBan;
         document.querySelector('#gioLam').value = arrNhanVien[indexEdit].gioLam;
+        document.querySelector('#btnThemNV').disabled = true;
+        document.querySelector('#tknv').disabled = true;
     }
+  
+    $('#myModal').modal('show');
+}
+// cập nhật nhân viên
+
+document.querySelector('#btnCapNhat').onclick = function () {
+    var nhanVienEdit = new NhanVien();
+    nhanVienEdit.taiKhoan = document.querySelector('#tknv').value;
+    nhanVienEdit.hoTen = document.querySelector('#hoTen').value;
+    nhanVienEdit.email = document.querySelector('#email').value;
+    nhanVienEdit.ngayLam = document.querySelector('#datepicker').value;
+    nhanVienEdit.matKhau = document.querySelector('#password').value;
+    var chonChucVu = document.querySelector('#chucvu');
+    nhanVienEdit.chucVu = chonChucVu.value;
+    nhanVienEdit.luongCoBan = parseInt(document.querySelector('#luongCB').value);
+    nhanVienEdit.gioLam = parseInt(document.querySelector('#gioLam').value);
+
+    for(var i=0;i<arrNhanVien.length;i++) {
+        if(arrNhanVien[i].taiKhoan === nhanVienEdit.taiKhoan) {
+            var nvMang = arrNhanVien[i];
+            nvMang.hoTen =  nhanVienEdit.hoTen;
+            nvMang.email = nhanVienEdit.email;
+            nvMang.ngayLam = nhanVienEdit.ngayLam;
+            nvMang.matKhau = nhanVienEdit.matKhau;
+            nvMang.chucVu = nhanVienEdit.chucVu;
+            nvMang.luongCoBan = nhanVienEdit.luongCoBan;
+            nvMang.gioLam = nhanVienEdit.gioLam;
+            break;
+        }
+    }
+    $('#myModal').modal('hide');
+    renderNhanVien(arrNhanVien);
+    saveStorage();
+
 }
 
+// tìm nhân viên theo loại
+
+document.querySelector('#btnTimNV').onclick = function() {
+  var tuKhoa = document.querySelector('#searchName').value.trim().toLowerCase();
+  var arrNhanVienTK = [];
+//   arrNhanVien.push(xepLoaiNhanVien());
+  if (arrNhanVien && arrNhanVien.length > 0) {
+    for (var i = 0; i < arrNhanVien.length; i++) {
+        console.log(arrNhanVien[i]);
+    //   var nv = arrNhanVien[i];
+    //   if (nv.xepLoaiNhanVien().trim().toLowerCase().indexOf(tuKhoa) !== -1) {
+    //     arrNhanVienTK.push(nv);
+    //   }
+    }
+  }
+  renderNhanVien(arrNhanVienTK);
+}
 
 
 
