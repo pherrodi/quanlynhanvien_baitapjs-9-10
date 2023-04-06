@@ -22,11 +22,10 @@ document.querySelector('#btnThemNV').onclick = function (event) {
     var valid = true;
     var messError = '';
     // kiểm tra rỗng 
-    valid = kiemTraRong(nv.taiKhoan, 'taiKhoan') & kiemTraRong(nv.hoTen, 'hoTen') & kiemTraRong(nv.email, 'email') & kiemTraRong(nv.matKhau, 'password') & kiemTraRongSo(nv.luongCoBan, 'luongCB') & kiemTraRongSo(nv.gioLam, 'gioLam');
-    // kiểm tra chức vụ
-    valid = kiemTraChucVu('chucvu', 'error-select-chucvu', 'Chức vụ');
-    // kiểm tra email
-    valid = kiemTraEmail(nv.email, 'email');
+    valid = kiemTraRong(nv.taiKhoan, 'taiKhoan') & kiemTraRong(nv.hoTen, 'hoTen') & kiemTraRong(nv.email, 'email') & kiemTraRong(nv.matKhau, 'password') & kiemTraRongSo(nv.luongCoBan, 'luongCB') & kiemTraRongSo(nv.gioLam, 'gioLam') &kiemTraChucVu('chucvu', 'error-select-chucvu', 'Chức vụ') & kiemTraEmail(nv.email, 'email') & kiemTraGiaTri(nv.luongCoBan, 'luongCB', 1000000, 20000000) & kiemTraGiaTri(nv.gioLam, 'gioLam', 80, 200) &  kiemTraNgayLam(nv.ngayLam, 'ngayLam') ;
+   
+    
+    
     // kiểm tra độ dài tài khoản
     valid = kiemTraDoDai(nv.taiKhoan, 'taiKhoan', 4, 6);
     // kiểm tra tên nv phải là chữ
@@ -34,9 +33,9 @@ document.querySelector('#btnThemNV').onclick = function (event) {
     // kiểm tra password 
     // valid = kiemTraMatKhau(nv.matKhau,'password',4,10,1,1,1);
     // kiểm tra ngày làm đúng định dạng mm/dd/yyyy
-    valid = kiemTraNgayLam(nv.ngayLam, 'ngayLam');
-    // kiểm tra lương cơ bản từ 1tr-20tr
-    valid = kiemTraGiaTri(nv.luongCoBan, 'luongCB', 1000000, 20000000)
+
+   
+    
     // kiểm tra số giờ làm từ 80-200 giờ 
     valid = kiemTraGiaTri(nv.gioLam, 'gioLam', 80, 200);
     if (!valid) {
@@ -61,22 +60,53 @@ function renderNhanVien(arrNV) {
     for (var i = 0; i < arrNV.length; i++) {
         var nvNew = new NhanVien();
         var nv = arrNV[i];
-        Object.assign(nvNew, nv);
+         nv.xepLoaiNhanVien = function () {
+            var xepLoai = '';
+            if (this.gioLam >= 192) {
+              xepLoai = 'Xuất sắc';
+            }
+            else if (this.gioLam>=176) {
+              xepLoai = 'Giỏi';
+            }
+            else if (this.gioLam>=160) {
+              xepLoai = 'Khá';
+            }
+            else {
+              xepLoai = 'Trung bình';
+            }
+            return xepLoai;
+          }
+           nv.tongLuong = function () {
+            var heSoLuong = 0;
+            var tongLuong = 0;
+            if (this.chucVu === "Sếp") {
+                heSoLuong = 3;
+              } else if (this.chucVu === "Trưởng phòng") {
+                heSoLuong = 2;
+              } else if (this.chucVu === "Nhân viên") {
+                heSoLuong = 1;
+              } else {
+                heSoLuong = 0;
+              }
+               tongLuong = heSoLuong * this.luongCoBan;
+              return tongLuong;
+            }
         htmlContent += `
         <tr>
-        <td>${nvNew.taiKhoan}</td>
-        <td>${nvNew.hoTen}</td>
-        <td>${nvNew.email}</td>
-        <td>${nvNew.ngayLam}</td>
-        <td>${nvNew.chucVu}</td>
-        <td>${nvNew.tongLuong()}</td>
-        <td>${nvNew.xepLoaiNhanVien()}</td>
-        <td><button class="btn btn-danger" onclick="xoaNhanVienTheoMa('${nvNew.taiKhoan}')">Xóa</button></td>
-        <td><button class="btn btn-success" onclick="chinhSuaNhanVien('${nvNew.taiKhoan}')">Chỉnh Sửa</button></td>
+        <td>${nv.taiKhoan}</td>
+        <td>${nv.hoTen}</td>
+        <td>${nv.email}</td>
+        <td>${nv.ngayLam}</td>
+        <td>${nv.chucVu}</td>
+        <td>${nv.tongLuong()}</td>
+        <td>${nv.xepLoaiNhanVien()}</td>
+        <td><button class="btn btn-danger" onclick="xoaNhanVienTheoMa('${nv.taiKhoan}')">Xóa</button></td>
+        <td><button class="btn btn-success" onclick="chinhSuaNhanVien('${nv.taiKhoan}')">Chỉnh Sửa</button></td>
 
         </tr>
         `
     }
+    
     document.querySelector('#tableDanhSach').innerHTML = htmlContent;
     return htmlContent;
 }
@@ -154,6 +184,29 @@ document.querySelector('#btnCapNhat').onclick = function () {
             break;
         }
     }
+    var valid = true;
+    var messError = '';
+    // kiểm tra rỗng 
+    valid = kiemTraRong(nvMang.taiKhoan, 'taiKhoan') & kiemTraRong(nvMang.hoTen, 'hoTen') & kiemTraRong(nvMang.email, 'email') & kiemTraRong(nvMang.matKhau, 'password') & kiemTraRongSo(nvMang.luongCoBan, 'luongCB') & kiemTraRongSo(nvMang.gioLam, 'gioLam') &kiemTraChucVu('chucvu', 'error-select-chucvu', 'Chức vụ') & kiemTraEmail(nvMang.email, 'email') & kiemTraGiaTri(nvMang.luongCoBan, 'luongCB', 1000000, 20000000) & kiemTraGiaTri(nvMang.gioLam, 'gioLam', 80, 200) &  kiemTraNgayLam(nvMang.ngayLam, 'ngayLam') ;
+   
+    
+    
+    // kiểm tra độ dài tài khoản
+    valid = kiemTraDoDai(nvMang.taiKhoan, 'taiKhoan', 4, 6);
+    // kiểm tra tên nvMang phải là chữ
+    valid = kiemTraKyTu(nvMang.hoTen, 'hoTen');
+    // kiểm tra password 
+    // valid = kiemTraMatKhau(nv.matKhau,'password',4,10,1,1,1);
+    // kiểm tra ngày làm đúng định dạng mm/dd/yyyy
+
+   
+    
+    // kiểm tra số giờ làm từ 80-200 giờ 
+    valid = kiemTraGiaTri(nv.gioLam, 'gioLam', 80, 200);
+    if (!valid) {
+
+        return;
+    }
     $('#myModal').modal('hide');
     renderNhanVien(arrNhanVien);
     saveStorage();
@@ -163,17 +216,18 @@ document.querySelector('#btnCapNhat').onclick = function () {
 // tìm nhân viên theo loại
 
 document.querySelector('#btnTimNV').onclick = function() {
-  var tuKhoa = document.querySelector('#searchName').value.trim().toLowerCase();
+  var tuKhoa = document.querySelector('#searchName').value.trim();
+  tuKhoa = stringToSlug(tuKhoa); //Nguyễn Văn A => nguyen-van-a
+  console.log('Từ khoá',tuKhoa);
   var arrNhanVienTK = [];
-//   arrNhanVien.push(xepLoaiNhanVien());
-  if (arrNhanVien && arrNhanVien.length > 0) {
-    for (var i = 0; i < arrNhanVien.length; i++) {
-        console.log(arrNhanVien[i]);
-    //   var nv = arrNhanVien[i];
-    //   if (nv.xepLoaiNhanVien().trim().toLowerCase().indexOf(tuKhoa) !== -1) {
-    //     arrNhanVienTK.push(nv);
-    //   }
-    }
+  for (var index = 0; index < arrNhanVien.length; index++) {
+      //Mỗi lần duyệt lấy ra 1 sinh viên
+      var sv = arrNhanVien[index];
+
+      if(stringToSlug(sv.xepLoaiNhanVien().trim()).search(tuKhoa) !== -1){
+          //Tìm ra tenSinhVien nào chứa từ khoá thì đưa object sinh vien đó vào mảng tìm kiếm
+          arrNhanVienTK.push(sv);
+      }
   }
   renderNhanVien(arrNhanVienTK);
 }
